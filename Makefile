@@ -1,4 +1,4 @@
-MF := $(shell python -c "import os,sys; print(os.path.realpath(os.path.expanduser(sys.argv[1])))"  $(CURDIR)/$(lastword $(MAKEFILE_LIST)) )
+MF := $(shell python -c 'import os,sys; print(os.path.realpath(os.path.expanduser(sys.argv[1])))'  $(CURDIR)/$(lastword $(MAKEFILE_LIST)) )
 MAKEDIR := $(shell dirname $(MF))
 BASEDIR := $(shell cd $(MAKEDIR) ; git rev-parse --show-toplevel)
 
@@ -13,8 +13,8 @@ DESCRIPTION        ?=
 ARCHITECTURE       ?= 
 
 TAG                 = $(VERSION)-$(PACKAGE_VERSION)
-CONTAINER_NAME      = $(shell echo "$(NAME)-$(TAG)" | sed 's@/@-@g')
-PACKAGE_NAME        = $(shell echo "$(NAME)" | sed 's@/@-@g')
+CONTAINER_NAME      = $(shell echo '$(NAME)-$(TAG)' | sed 's@/@-@g')
+PACKAGE_NAME        = $(shell echo '$(NAME)' | sed 's@/@-@g')
 REPOSITORY         ?=
 
 PACKAGE_IMAGE      ?=
@@ -35,7 +35,7 @@ clean-docker:
 	$(call docker-clean,$(CONTAINER_NAME))
 
 check-repository: check-docker
-	if [ -z "$(REPOSITORY)" ] ; then echo "REPOSITORY unset. Can't tag for upstream" ; exit 1 ; fi
+	if [ -z '$(REPOSITORY)' ] ; then echo "REPOSITORY unset. Can't tag for upstream" ; exit 1 ; fi
 
 check-latest: check-docker
 	$(DOCKER) $(DOCKER_OPTS) images | grep $(NAME) | grep latest &>/dev/null || ( [ -f .dockerbuild ] && rm -rf .dockerbuild || true )
@@ -47,18 +47,18 @@ package: check-docker build-docker clean-package
 ifneq ($(PACKAGE_IMAGE),)
 	( $(DOCKER) $(DOCKER_OPTS) run -a stdout -a stderr --rm \
 	-v /var/run/docker.sock:/var/run/docker.sock \
-	-e NAME="${NAME}" \
-	-e TAG="${TAG}" \
-	-e VERSION="${VERSION}" \
-	-e PACKAGE_NAME="${PACKAGE_NAME}" \
-	-e PACKAGE_VERSION="${PACKAGE_VERSION}" \
-	-e CONTAINER_NAME="${CONTAINER_NAME}" \
-	-e REPOSITORY="${REPOSITORY}" \
-	-e MAINTAINER="${MAINTAINER}" \
-	-e DESCRIPTION="${DESCRIPTION}" \
-	-e ARCHITECTURE="${ARCHITECTURE}" \
-	-e DOCKER_CREATE_OPTS="${DOCKER_CREATE_OPTS}" \
-	-e DOCKER_RUN_OPTS="${DOCKER_RUN_OPTS}" \
+	-e NAME='$(NAME)' \
+	-e TAG='$(TAG)' \
+	-e VERSION='$(VERSION)' \
+	-e PACKAGE_NAME='$(PACKAGE_NAME)' \
+	-e PACKAGE_VERSION='$(PACKAGE_VERSION)' \
+	-e CONTAINER_NAME='$(CONTAINER_NAME)' \
+	-e REPOSITORY='$(REPOSITORY)' \
+	-e MAINTAINER='$(MAINTAINER)' \
+	-e DESCRIPTION='$(DESCRIPTION)' \
+	-e ARCHITECTURE='$(ARCHITECTURE)' \
+	-e DOCKER_CREATE_OPTS='$(DOCKER_CREATE_OPTS)' \
+	-e DOCKER_RUN_OPTS='$(DOCKER_RUN_OPTS)' \
 	$(PACKAGE_IMAGE) ) | tar xzf -
 endif
 
