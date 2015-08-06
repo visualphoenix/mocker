@@ -24,10 +24,12 @@ DOCKER := $(SUDO) docker
 DOCKER_OPTS        ?=
 DOCKER_OPTS        +=
 
+DOCKER_PACKAGE_OPTS ?=
+
 DOCKER_CREATE_OPTS ?=
 DOCKER_CREATE_OPTS += --restart=always
 
-DOCKER_RUN_OPTS ?=
+DOCKER_RUN_OPTS    ?=
 DOCKER_RUN_OPTS    += -d
 
 BUILD_FILES        ?=
