@@ -1,5 +1,4 @@
 SHELL := /bin/bash
-GIT_SHA := $(shell git rev-parse --short HEAD)
 UNAME_S := $(shell uname -s)
 ID_U := $(shell id -u)
 DIND := $(shell test -f /.dockerinit && echo "true" || echo "false")
@@ -19,6 +18,7 @@ XARGS := xargs -r
 ifeq ($(UNAME_S),Darwin)
   XARGS := xargs
 endif
+
 DOCKER := $(SUDO) docker
 
 DOCKER_OPTS        ?=
