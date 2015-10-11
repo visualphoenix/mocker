@@ -45,6 +45,7 @@ images: check-docker
 
 package: check-docker build-docker clean-package
 ifneq ($(PACKAGE_IMAGE),)
+	$(DOCKER) $(DOCKER_OPTS) pull $(PACKAGE_IMAGE)
 	( $(DOCKER) $(DOCKER_OPTS) run -a stdout -a stderr --rm \
 	-v /var/run/docker.sock:/var/run/docker.sock \
 	-e NAME='$(NAME)' \
