@@ -24,3 +24,5 @@ else ifeq ($(SBRANCH),release)
 else
   PACKAGE_VERSION  :=0.0.0.$(NCOMMITS).unk.$(GIT_SHA)
 endif
+
+TAG                := $(VERSION)-$(PACKAGE_VERSION)
