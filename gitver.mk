@@ -19,6 +19,8 @@ else ifeq ($(SBRANCH),develop)
   PACKAGE_VERSION  :=0.1.$(NCOMMITS).dev.$(GIT_SHA)
 else ifeq ($(SBRANCH),feature)
   PACKAGE_VERSION  :=0.0.$(NCOMMITS).feat.$(GIT_SHA)
+else ifeq ($(SBRANCH),hotfix)
+  PACKAGE_VERSION  :=0.1.$(NCOMMITS).rc.$(GIT_SHA)
 else ifeq ($(SBRANCH),release)
   PACKAGE_VERSION  :=0.1.$(NCOMMITS).rc.$(GIT_SHA)
 else
