@@ -1,25 +1,35 @@
 SHELL := /bin/bash
 UNAME_S := $(shell uname -s)
-ID_U := $(shell id -u)
-DIND := $(shell test -f /.dockerinit && echo "true" || echo "false")
+DOCKER_VERSION := $(shell docker --version | awk '{gsub(/,.*/,""); print $$3}')
+DOCKER_MINOR_VERSION := $(shell echo '$(DOCKER_VERSION)' | awk -F'.' '{print $$2}')
 DEBUG_OUTPUT ?= @
-.SUFFIXES:
+
 MAKEFLAGS += --no-builtin-rules
-ARTIFACT := false
-SUDO :=
-ifneq ($(UNAME_S),Darwin)
-  ifneq ($(ID_U),0)
-    ifneq ($(DIND),true)
-      SUDO := sudo
-    endif
-  endif
-endif
+.SUFFIXES :=
+.DEFAULT_GOAL := build
+.PHONY := clean build package push tag init image-name run-dev-ev1 run-dev-wc1 launch-to-prod test-jira-user-pass
+
+# Use sudo if the docker socket isnt writable by the current user
+SUDO := $(shell (test -f /.dockerinit || test -w /var/run/docker.sock) && echo || echo sudo)
+
+SED_I := sed -i''
+
+# Handle linux/osx differences
 XARGS := xargs -r
+FIND_DEPTH := maxdepth
 ifeq ($(UNAME_S),Darwin)
-  XARGS := xargs
+	XARGS := xargs
+	FIND_DEPTH := depth
 endif
 
+# Docker variables
 DOCKER := $(SUDO) docker
+DOCKER_FORCE_TAG :=
+ifeq ($(shell test $(DOCKER_MINOR_VERSION) -lt 9; echo $$?),0)
+	DOCKER_FORCE_TAG := -f
+endif
+
+ARTIFACT := false
 
 DOCKER_OPTS        ?=
 DOCKER_OPTS        +=

@@ -65,8 +65,8 @@ ifneq ($(PACKAGE_IMAGE),)
 endif
 
 tag: check-docker check-repository
-	$(DOCKER) $(DOCKER_OPTS) tag -f $(NAME):$(TAG) $(REPOSITORY)/$(NAME):latest
-	$(DOCKER) $(DOCKER_OPTS) tag -f $(NAME):$(TAG) $(REPOSITORY)/$(NAME):$(TAG)
+	$(DOCKER) $(DOCKER_OPTS) tag $(DOCKER_FORCE_TAG) $(NAME):$(TAG) $(REPOSITORY)/$(NAME):latest
+	$(DOCKER) $(DOCKER_OPTS) tag $(DOCKER_FORCE_TAG) $(NAME):$(TAG) $(REPOSITORY)/$(NAME):$(TAG)
 
 push: check-docker tag
 	$(DOCKER) $(DOCKER_OPTS) push $(REPOSITORY)/$(NAME):$(TAG)
@@ -91,7 +91,7 @@ build: check-docker build-docker
 .dockerbuild: $(BUILD_FILES)
 	$(MAKE) clean-docker;
 	$(DOCKER) $(DOCKER_OPTS) build --force-rm -t $(NAME):$(TAG) .
-	$(DOCKER) $(DOCKER_OPTS) tag -f $(NAME):$(TAG) $(NAME):latest
+	$(DOCKER) $(DOCKER_OPTS) tag $(DOCKER_FORCE_TAG) $(NAME):$(TAG) $(NAME):latest
 	$(DOCKER) $(DOCKER_OPTS) images -qf 'dangling=true' | tr '\n' ' ' | $(SUDO) $(XARGS) docker $(DOCKER_OPTS) rmi
 	touch $@;
 
